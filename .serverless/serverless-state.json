@@ -1,0 +1,2079 @@
+{
+  "service": {
+    "service": "UE2PRUEBARIMAC",
+    "serviceObject": {
+      "name": "UE2PRUEBARIMAC"
+    },
+    "provider": {
+      "stage": "desa",
+      "variableSyntax": "\\${([^{}]+?)}",
+      "name": "aws",
+      "apiGateway": {
+        "restApiId": "i95m2k8tma",
+        "restApiRootResourceId": "muooor"
+      },
+      "runtime": "nodejs10.x",
+      "region": "us-east-2",
+      "tracing": true,
+      "timeout": 60,
+      "memorySize": 512,
+      "versionFunctions": false,
+      "stackTags": {
+        "NAME": "Proyecto Prueba",
+        "ENTORNO": "DESARROLLO",
+        "PROYECTO": "PRUEBA RIMAC",
+        "DOMINIO": "RIMAC",
+        "RESPONSABLE": "MARCO SOLIMANO",
+        "ESTADO_OPERACION": "PROYECTO",
+        "MODULO": "PRUEBA"
+      },
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GetPruebaRimacLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/LMBPRUEBARIMACGET"
+            }
+          },
+          "PostPruebaRimacLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/LMBPRUEBARIMACPOST"
+            }
+          },
+          "GetListadoPersonaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/LMBPRUEBARIMACPERSONAS"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "UE2PRUEBARIMAC",
+                        "desa",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACGET:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACPOST:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACPERSONAS:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACGET:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACPOST:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LMBPRUEBARIMACPERSONAS:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "UE2PRUEBARIMAC",
+                    "desa",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetPruebaRimacLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/UE2PRUEBARIMAC/desa/1604679298566-2020-11-06T16:14:58.566Z/getPruebaRimac.zip"
+              },
+              "FunctionName": "LMBPRUEBARIMACGET",
+              "Handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.Consultarstarwarsapicontroller",
+              "MemorySize": 512,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs10.x",
+              "Timeout": 60,
+              "Description": "Retorna un listado de las api SWAPI",
+              "Environment": {
+                "Variables": {
+                  "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+                  "PC_CLOUD_DATABASE": "reto_rimac",
+                  "PC_CLOUD_USER": "admin",
+                  "PC_CLOUD_PASSWORD": "N771610j.++",
+                  "PC_CLOUD_PORT": 3306,
+                  "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetPruebaRimacLogGroup"
+            ]
+          },
+          "PostPruebaRimacLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/UE2PRUEBARIMAC/desa/1604679298566-2020-11-06T16:14:58.566Z/postPruebaRimac.zip"
+              },
+              "FunctionName": "LMBPRUEBARIMACPOST",
+              "Handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.regitrarstarwarsapicontroller",
+              "MemorySize": 512,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs10.x",
+              "Timeout": 60,
+              "Description": "Registra a una persona con modelo de SWAPI",
+              "Environment": {
+                "Variables": {
+                  "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+                  "PC_CLOUD_DATABASE": "reto_rimac",
+                  "PC_CLOUD_USER": "admin",
+                  "PC_CLOUD_PASSWORD": "N771610j.++",
+                  "PC_CLOUD_PORT": 3306,
+                  "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+                }
+              }
+            },
+            "DependsOn": [
+              "PostPruebaRimacLogGroup"
+            ]
+          },
+          "GetListadoPersonaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/UE2PRUEBARIMAC/desa/1604679298566-2020-11-06T16:14:58.566Z/getListadoPersona.zip"
+              },
+              "FunctionName": "LMBPRUEBARIMACPERSONAS",
+              "Handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.listarpersonaapicontroller",
+              "MemorySize": 512,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs10.x",
+              "Timeout": 60,
+              "Description": "Retorna un listado de las personas registradas enlasadas a SWAPI",
+              "Environment": {
+                "Variables": {
+                  "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+                  "PC_CLOUD_DATABASE": "reto_rimac",
+                  "PC_CLOUD_USER": "admin",
+                  "PC_CLOUD_PASSWORD": "N771610j.++",
+                  "PC_CLOUD_PORT": 3306
+                }
+              }
+            },
+            "DependsOn": [
+              "GetListadoPersonaLogGroup"
+            ]
+          },
+          "ApiGatewayResourceReto": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": "muooor",
+              "PathPart": "reto",
+              "RestApiId": "i95m2k8tma"
+            }
+          },
+          "ApiGatewayResourceRetoApi": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceReto"
+              },
+              "PathPart": "api",
+              "RestApiId": "i95m2k8tma"
+            }
+          },
+          "ApiGatewayResourceRetoListpersonas": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceReto"
+              },
+              "PathPart": "listPersonas",
+              "RestApiId": "i95m2k8tma"
+            }
+          },
+          "ApiGatewayMethodRetoApiOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,Access-Control-Allow-Origin,Access-Control-Allow-Credentials,User'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRetoApi"
+              },
+              "RestApiId": "i95m2k8tma"
+            }
+          },
+          "ApiGatewayMethodRetoListpersonasOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,Access-Control-Allow-Origin,Access-Control-Allow-Credentials,User'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRetoListpersonas"
+              },
+              "RestApiId": "i95m2k8tma"
+            }
+          },
+          "ApiGatewayMethodRetoApiGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRetoApi"
+              },
+              "RestApiId": "i95m2k8tma",
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetPruebaRimacLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodRetoApiPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRetoApi"
+              },
+              "RestApiId": "i95m2k8tma",
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "PostPruebaRimacLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodRetoListpersonasGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRetoListpersonas"
+              },
+              "RestApiId": "i95m2k8tma",
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetListadoPersonaLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1604679287134": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": "i95m2k8tma",
+              "StageName": "desa"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodRetoApiOptions",
+              "ApiGatewayMethodRetoListpersonasOptions",
+              "ApiGatewayMethodRetoApiGet",
+              "ApiGatewayMethodRetoApiPost",
+              "ApiGatewayMethodRetoListpersonasGet"
+            ]
+          },
+          "GetPruebaRimacLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetPruebaRimacLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    "i95m2k8tma",
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "PostPruebaRimacLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "PostPruebaRimacLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    "i95m2k8tma",
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetListadoPersonaLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetListadoPersonaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    "i95m2k8tma",
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  "i95m2k8tma",
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/desa"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "serverless-offline": {
+        "port": 4000
+      },
+      "stage": "desa",
+      "env": {
+        "desa": "DESA",
+        "test": "TEST",
+        "prod": "PROD"
+      },
+      "environments": {
+        "desa": "DESARROLLO",
+        "test": "TEST",
+        "prod": "PRODUCCION"
+      },
+      "region": {
+        "desa": "us-east-2",
+        "test": "us-east-2",
+        "prod": "us-east-1"
+      },
+      "region-name": {
+        "desa": "UE2",
+        "test": "UE2",
+        "prod": "UE1"
+      },
+      "auth": {
+        "desa": "rm0dyu",
+        "test": "l9g1gd",
+        "prod": "yk1mpo"
+      },
+      "type_auth": {
+        "desa": "aws_iam",
+        "test": "aws_iam",
+        "prod": "aws_iam"
+      },
+      "db_name": {
+        "desa": "reto_rimac",
+        "test": "reto_rimac",
+        "prod": "reto_rimac"
+      },
+      "db_host": {
+        "desa": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+        "test": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+        "prod": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com"
+      },
+      "db_password": {
+        "desa": "N771610j.++",
+        "test": "N771610j.++",
+        "prod": "N771610j.++"
+      },
+      "db_username": {
+        "desa": "admin",
+        "test": "admin",
+        "prod": "admin"
+      },
+      "db_port": 3306,
+      "role": {
+        "desa": "arn:aws:iam::477542548955:role/UE1SEGDESAIAMROLPRUEBAMB001",
+        "test": "arn:aws:iam::477542548955:role/UE1SEGTESTIAMROLPRUEBAMB001",
+        "prod": "arn:aws:iam::477542548955:role/UE1SEGPRODIAMROLPRUEBAMB001"
+      },
+      "serviceName": "${self:}",
+      "api": {
+        "desa": "1ga4rgw9u1",
+        "test": "1ga4rgw9u1",
+        "prod": ""
+      },
+      "project": "PRUEBA RIMAC",
+      "domain": "RIMAC",
+      "responsable": "MARCO SOLIMANO",
+      "status": "PROYECTO",
+      "module": "PRUEBA"
+    },
+    "plugins": [
+      "serverless-plugin-include-dependencies",
+      "serverless-offline"
+    ],
+    "pluginsData": {},
+    "functions": {
+      "getPruebaRimac": {
+        "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.Consultarstarwarsapicontroller",
+        "name": "LMBPRUEBARIMACGET",
+        "description": "Retorna un listado de las api SWAPI",
+        "package": {
+          "include": [
+            "LMBPRUEBARIMAC/src/**",
+            "LMBPRUEBARIMAC/src/controllers/PruebaController.js",
+            "LMBPRUEBARIMAC/src/util/AwsUtils.js",
+            "LMBPRUEBARIMAC/src/services/PruebaRimacService.js",
+            "LMBPRUEBARIMAC/src/models/response/PersonaRes.js",
+            "LMBPRUEBARIMAC/src/db/PersonaDB.js",
+            "LMBPRUEBARIMAC/src/models/response/DetalleRes.js",
+            "LMBPRUEBARIMAC/src/db/PCCloudConnection.js",
+            "LMBPRUEBARIMAC/src/db/config.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlConnection.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlDatabase.js",
+            "LMBPRUEBARIMAC/src/db/util/ObjectMapper.js",
+            "LMBPRUEBARIMAC/src/constants/Query_rds.js",
+            "LMBPRUEBARIMAC/src/models/response/ResponseUserCreado.js",
+            "LMBPRUEBARIMAC/src/models/request/PersonaReq.js",
+            "LMBPRUEBARIMAC/src/validators/RequestValidador.js",
+            "node_modules/joi/CHANGELOG.md",
+            "node_modules/joi/lib/cast.js",
+            "node_modules/joi/lib/errors.js",
+            "node_modules/joi/lib/index.js",
+            "node_modules/joi/lib/language.js",
+            "node_modules/joi/lib/ref.js",
+            "node_modules/joi/lib/schemas.js",
+            "node_modules/joi/lib/set.js",
+            "node_modules/joi/lib/types/alternatives/index.js",
+            "node_modules/joi/lib/types/any/index.js",
+            "node_modules/joi/lib/types/any/settings.js",
+            "node_modules/joi/lib/types/array/index.js",
+            "node_modules/joi/lib/types/binary/index.js",
+            "node_modules/joi/lib/types/boolean/index.js",
+            "node_modules/joi/lib/types/date/index.js",
+            "node_modules/joi/lib/types/func/index.js",
+            "node_modules/joi/lib/types/lazy/index.js",
+            "node_modules/joi/lib/types/number/index.js",
+            "node_modules/joi/lib/types/object/index.js",
+            "node_modules/joi/lib/types/state.js",
+            "node_modules/joi/lib/types/string/index.js",
+            "node_modules/joi/lib/types/string/ip.js",
+            "node_modules/joi/lib/types/string/rfc3986.js",
+            "node_modules/joi/lib/types/string/uri.js",
+            "node_modules/joi/lib/types/symbol/index.js",
+            "node_modules/joi/lib/types/symbols.js",
+            "node_modules/joi/LICENSE",
+            "node_modules/joi/package.json",
+            "node_modules/joi/README.md",
+            "node_modules/topo/lib/index.js",
+            "node_modules/topo/LICENSE",
+            "node_modules/topo/package.json",
+            "node_modules/topo/README.md",
+            "node_modules/hoek/CHANGELOG.md",
+            "node_modules/hoek/lib/deep-equal.js",
+            "node_modules/hoek/lib/escape.js",
+            "node_modules/hoek/lib/index.js",
+            "node_modules/hoek/LICENSE",
+            "node_modules/hoek/package.json",
+            "node_modules/hoek/README.md",
+            "node_modules/isemail/lib/index.d.ts",
+            "node_modules/isemail/lib/index.js",
+            "node_modules/isemail/LICENSE",
+            "node_modules/isemail/package.json",
+            "node_modules/isemail/README.md",
+            "node_modules/isemail/node_modules/punycode/LICENSE-MIT.txt",
+            "node_modules/isemail/node_modules/punycode/package.json",
+            "node_modules/isemail/node_modules/punycode/punycode.es6.js",
+            "node_modules/isemail/node_modules/punycode/punycode.js",
+            "node_modules/isemail/node_modules/punycode/README.md",
+            "node_modules/mysql/Changes.md",
+            "node_modules/mysql/index.js",
+            "node_modules/mysql/lib/Connection.js",
+            "node_modules/mysql/lib/ConnectionConfig.js",
+            "node_modules/mysql/lib/Pool.js",
+            "node_modules/mysql/lib/PoolCluster.js",
+            "node_modules/mysql/lib/PoolConfig.js",
+            "node_modules/mysql/lib/PoolConnection.js",
+            "node_modules/mysql/lib/PoolNamespace.js",
+            "node_modules/mysql/lib/PoolSelector.js",
+            "node_modules/mysql/lib/protocol/Auth.js",
+            "node_modules/mysql/lib/protocol/BufferList.js",
+            "node_modules/mysql/lib/protocol/constants/charsets.js",
+            "node_modules/mysql/lib/protocol/constants/client.js",
+            "node_modules/mysql/lib/protocol/constants/errors.js",
+            "node_modules/mysql/lib/protocol/constants/field_flags.js",
+            "node_modules/mysql/lib/protocol/constants/server_status.js",
+            "node_modules/mysql/lib/protocol/constants/ssl_profiles.js",
+            "node_modules/mysql/lib/protocol/constants/types.js",
+            "node_modules/mysql/lib/protocol/PacketHeader.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchResponsePacket.js",
+            "node_modules/mysql/lib/protocol/packets/ClientAuthenticationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComChangeUserPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComPingPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQueryPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQuitPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComStatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EmptyPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EofPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ErrorPacket.js",
+            "node_modules/mysql/lib/protocol/packets/Field.js",
+            "node_modules/mysql/lib/protocol/packets/FieldPacket.js",
+            "node_modules/mysql/lib/protocol/packets/HandshakeInitializationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/index.js",
+            "node_modules/mysql/lib/protocol/packets/LocalDataFilePacket.js",
+            "node_modules/mysql/lib/protocol/packets/LocalInfileRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OkPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ResultSetHeaderPacket.js",
+            "node_modules/mysql/lib/protocol/packets/RowDataPacket.js",
+            "node_modules/mysql/lib/protocol/packets/SSLRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/StatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/UseOldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/PacketWriter.js",
+            "node_modules/mysql/lib/protocol/Parser.js",
+            "node_modules/mysql/lib/protocol/Protocol.js",
+            "node_modules/mysql/lib/protocol/ResultSet.js",
+            "node_modules/mysql/lib/protocol/sequences/ChangeUser.js",
+            "node_modules/mysql/lib/protocol/sequences/Handshake.js",
+            "node_modules/mysql/lib/protocol/sequences/index.js",
+            "node_modules/mysql/lib/protocol/sequences/Ping.js",
+            "node_modules/mysql/lib/protocol/sequences/Query.js",
+            "node_modules/mysql/lib/protocol/sequences/Quit.js",
+            "node_modules/mysql/lib/protocol/sequences/Sequence.js",
+            "node_modules/mysql/lib/protocol/sequences/Statistics.js",
+            "node_modules/mysql/lib/protocol/SqlString.js",
+            "node_modules/mysql/lib/protocol/Timer.js",
+            "node_modules/mysql/License",
+            "node_modules/mysql/package.json",
+            "node_modules/mysql/Readme.md",
+            "node_modules/sqlstring/HISTORY.md",
+            "node_modules/sqlstring/index.js",
+            "node_modules/sqlstring/lib/SqlString.js",
+            "node_modules/sqlstring/LICENSE",
+            "node_modules/sqlstring/package.json",
+            "node_modules/sqlstring/README.md",
+            "node_modules/mysql/node_modules/safe-buffer/index.d.ts",
+            "node_modules/mysql/node_modules/safe-buffer/index.js",
+            "node_modules/mysql/node_modules/safe-buffer/LICENSE",
+            "node_modules/mysql/node_modules/safe-buffer/package.json",
+            "node_modules/mysql/node_modules/safe-buffer/README.md",
+            "node_modules/mysql/node_modules/readable-stream/CONTRIBUTING.md",
+            "node_modules/mysql/node_modules/readable-stream/doc/wg-meetings/2015-01-30.md",
+            "node_modules/mysql/node_modules/readable-stream/duplex-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/GOVERNANCE.md",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_readable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_transform.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_writable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/BufferList.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/destroy.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream.js",
+            "node_modules/mysql/node_modules/readable-stream/LICENSE",
+            "node_modules/mysql/node_modules/readable-stream/package.json",
+            "node_modules/mysql/node_modules/readable-stream/passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/readable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/readable.js",
+            "node_modules/mysql/node_modules/readable-stream/README.md",
+            "node_modules/mysql/node_modules/readable-stream/transform.js",
+            "node_modules/mysql/node_modules/readable-stream/writable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/writable.js",
+            "node_modules/util-deprecate/browser.js",
+            "node_modules/util-deprecate/History.md",
+            "node_modules/util-deprecate/LICENSE",
+            "node_modules/util-deprecate/node.js",
+            "node_modules/util-deprecate/package.json",
+            "node_modules/util-deprecate/README.md",
+            "node_modules/mysql/node_modules/string_decoder/lib/string_decoder.js",
+            "node_modules/mysql/node_modules/string_decoder/LICENSE",
+            "node_modules/mysql/node_modules/string_decoder/package.json",
+            "node_modules/mysql/node_modules/string_decoder/README.md",
+            "node_modules/process-nextick-args/index.js",
+            "node_modules/process-nextick-args/license.md",
+            "node_modules/process-nextick-args/package.json",
+            "node_modules/process-nextick-args/readme.md",
+            "node_modules/isarray/component.json",
+            "node_modules/isarray/index.js",
+            "node_modules/isarray/Makefile",
+            "node_modules/isarray/package.json",
+            "node_modules/isarray/README.md",
+            "node_modules/isarray/test.js",
+            "node_modules/inherits/inherits_browser.js",
+            "node_modules/inherits/inherits.js",
+            "node_modules/inherits/LICENSE",
+            "node_modules/inherits/package.json",
+            "node_modules/inherits/README.md",
+            "node_modules/core-util-is/float.patch",
+            "node_modules/core-util-is/lib/util.js",
+            "node_modules/core-util-is/LICENSE",
+            "node_modules/core-util-is/package.json",
+            "node_modules/core-util-is/README.md",
+            "node_modules/core-util-is/test.js",
+            "node_modules/bignumber.js/bignumber.d.ts",
+            "node_modules/bignumber.js/bignumber.js",
+            "node_modules/bignumber.js/bignumber.min.js",
+            "node_modules/bignumber.js/bignumber.min.js.map",
+            "node_modules/bignumber.js/bignumber.mjs",
+            "node_modules/bignumber.js/CHANGELOG.md",
+            "node_modules/bignumber.js/doc/API.html",
+            "node_modules/bignumber.js/LICENCE",
+            "node_modules/bignumber.js/package.json",
+            "node_modules/bignumber.js/README.md",
+            "node_modules/axios/CHANGELOG.md",
+            "node_modules/axios/dist/axios.js",
+            "node_modules/axios/dist/axios.map",
+            "node_modules/axios/dist/axios.min.js",
+            "node_modules/axios/dist/axios.min.map",
+            "node_modules/axios/index.d.ts",
+            "node_modules/axios/index.js",
+            "node_modules/axios/lib/adapters/http.js",
+            "node_modules/axios/lib/adapters/README.md",
+            "node_modules/axios/lib/adapters/xhr.js",
+            "node_modules/axios/lib/axios.js",
+            "node_modules/axios/lib/cancel/Cancel.js",
+            "node_modules/axios/lib/cancel/CancelToken.js",
+            "node_modules/axios/lib/cancel/isCancel.js",
+            "node_modules/axios/lib/core/Axios.js",
+            "node_modules/axios/lib/core/buildFullPath.js",
+            "node_modules/axios/lib/core/createError.js",
+            "node_modules/axios/lib/core/dispatchRequest.js",
+            "node_modules/axios/lib/core/enhanceError.js",
+            "node_modules/axios/lib/core/InterceptorManager.js",
+            "node_modules/axios/lib/core/mergeConfig.js",
+            "node_modules/axios/lib/core/README.md",
+            "node_modules/axios/lib/core/settle.js",
+            "node_modules/axios/lib/core/transformData.js",
+            "node_modules/axios/lib/defaults.js",
+            "node_modules/axios/lib/helpers/bind.js",
+            "node_modules/axios/lib/helpers/buildURL.js",
+            "node_modules/axios/lib/helpers/combineURLs.js",
+            "node_modules/axios/lib/helpers/cookies.js",
+            "node_modules/axios/lib/helpers/deprecatedMethod.js",
+            "node_modules/axios/lib/helpers/isAbsoluteURL.js",
+            "node_modules/axios/lib/helpers/isURLSameOrigin.js",
+            "node_modules/axios/lib/helpers/normalizeHeaderName.js",
+            "node_modules/axios/lib/helpers/parseHeaders.js",
+            "node_modules/axios/lib/helpers/README.md",
+            "node_modules/axios/lib/helpers/spread.js",
+            "node_modules/axios/lib/utils.js",
+            "node_modules/axios/LICENSE",
+            "node_modules/axios/package.json",
+            "node_modules/axios/README.md",
+            "node_modules/axios/UPGRADE_GUIDE.md",
+            "node_modules/axios/node_modules/follow-redirects/debug.js",
+            "node_modules/axios/node_modules/follow-redirects/http.js",
+            "node_modules/axios/node_modules/follow-redirects/https.js",
+            "node_modules/axios/node_modules/follow-redirects/index.js",
+            "node_modules/axios/node_modules/follow-redirects/LICENSE",
+            "node_modules/axios/node_modules/follow-redirects/package.json",
+            "node_modules/axios/node_modules/follow-redirects/README.md"
+          ],
+          "artifact": "/Users/msolimano/Documents/Rimac/prueba-domain/.serverless/getPruebaRimac.zip"
+        },
+        "environment": {
+          "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+          "PC_CLOUD_DATABASE": "reto_rimac",
+          "PC_CLOUD_USER": "admin",
+          "PC_CLOUD_PASSWORD": "N771610j.++",
+          "PC_CLOUD_PORT": 3306,
+          "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "reto/api",
+              "method": "get",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "200 response",
+                  "schema": {
+                    "$ref": "#/definitions/Empty"
+                  },
+                  "headers": {
+                    "Access-Control-Allow-Origin": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "cors": {
+                "origin": "*",
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "Access-Control-Allow-Origin",
+                  "Access-Control-Allow-Credentials",
+                  "User"
+                ],
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "memory": 512,
+        "timeout": 60,
+        "runtime": "nodejs10.x",
+        "vpc": {}
+      },
+      "postPruebaRimac": {
+        "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.regitrarstarwarsapicontroller",
+        "name": "LMBPRUEBARIMACPOST",
+        "description": "Registra a una persona con modelo de SWAPI",
+        "package": {
+          "include": [
+            "LMBPRUEBARIMAC/src/**",
+            "LMBPRUEBARIMAC/src/controllers/PruebaController.js",
+            "LMBPRUEBARIMAC/src/util/AwsUtils.js",
+            "LMBPRUEBARIMAC/src/services/PruebaRimacService.js",
+            "LMBPRUEBARIMAC/src/models/response/PersonaRes.js",
+            "LMBPRUEBARIMAC/src/db/PersonaDB.js",
+            "LMBPRUEBARIMAC/src/models/response/DetalleRes.js",
+            "LMBPRUEBARIMAC/src/db/PCCloudConnection.js",
+            "LMBPRUEBARIMAC/src/db/config.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlConnection.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlDatabase.js",
+            "LMBPRUEBARIMAC/src/db/util/ObjectMapper.js",
+            "LMBPRUEBARIMAC/src/constants/Query_rds.js",
+            "LMBPRUEBARIMAC/src/models/response/ResponseUserCreado.js",
+            "LMBPRUEBARIMAC/src/models/request/PersonaReq.js",
+            "LMBPRUEBARIMAC/src/validators/RequestValidador.js",
+            "node_modules/joi/CHANGELOG.md",
+            "node_modules/joi/lib/cast.js",
+            "node_modules/joi/lib/errors.js",
+            "node_modules/joi/lib/index.js",
+            "node_modules/joi/lib/language.js",
+            "node_modules/joi/lib/ref.js",
+            "node_modules/joi/lib/schemas.js",
+            "node_modules/joi/lib/set.js",
+            "node_modules/joi/lib/types/alternatives/index.js",
+            "node_modules/joi/lib/types/any/index.js",
+            "node_modules/joi/lib/types/any/settings.js",
+            "node_modules/joi/lib/types/array/index.js",
+            "node_modules/joi/lib/types/binary/index.js",
+            "node_modules/joi/lib/types/boolean/index.js",
+            "node_modules/joi/lib/types/date/index.js",
+            "node_modules/joi/lib/types/func/index.js",
+            "node_modules/joi/lib/types/lazy/index.js",
+            "node_modules/joi/lib/types/number/index.js",
+            "node_modules/joi/lib/types/object/index.js",
+            "node_modules/joi/lib/types/state.js",
+            "node_modules/joi/lib/types/string/index.js",
+            "node_modules/joi/lib/types/string/ip.js",
+            "node_modules/joi/lib/types/string/rfc3986.js",
+            "node_modules/joi/lib/types/string/uri.js",
+            "node_modules/joi/lib/types/symbol/index.js",
+            "node_modules/joi/lib/types/symbols.js",
+            "node_modules/joi/LICENSE",
+            "node_modules/joi/package.json",
+            "node_modules/joi/README.md",
+            "node_modules/topo/lib/index.js",
+            "node_modules/topo/LICENSE",
+            "node_modules/topo/package.json",
+            "node_modules/topo/README.md",
+            "node_modules/hoek/CHANGELOG.md",
+            "node_modules/hoek/lib/deep-equal.js",
+            "node_modules/hoek/lib/escape.js",
+            "node_modules/hoek/lib/index.js",
+            "node_modules/hoek/LICENSE",
+            "node_modules/hoek/package.json",
+            "node_modules/hoek/README.md",
+            "node_modules/isemail/lib/index.d.ts",
+            "node_modules/isemail/lib/index.js",
+            "node_modules/isemail/LICENSE",
+            "node_modules/isemail/package.json",
+            "node_modules/isemail/README.md",
+            "node_modules/isemail/node_modules/punycode/LICENSE-MIT.txt",
+            "node_modules/isemail/node_modules/punycode/package.json",
+            "node_modules/isemail/node_modules/punycode/punycode.es6.js",
+            "node_modules/isemail/node_modules/punycode/punycode.js",
+            "node_modules/isemail/node_modules/punycode/README.md",
+            "node_modules/mysql/Changes.md",
+            "node_modules/mysql/index.js",
+            "node_modules/mysql/lib/Connection.js",
+            "node_modules/mysql/lib/ConnectionConfig.js",
+            "node_modules/mysql/lib/Pool.js",
+            "node_modules/mysql/lib/PoolCluster.js",
+            "node_modules/mysql/lib/PoolConfig.js",
+            "node_modules/mysql/lib/PoolConnection.js",
+            "node_modules/mysql/lib/PoolNamespace.js",
+            "node_modules/mysql/lib/PoolSelector.js",
+            "node_modules/mysql/lib/protocol/Auth.js",
+            "node_modules/mysql/lib/protocol/BufferList.js",
+            "node_modules/mysql/lib/protocol/constants/charsets.js",
+            "node_modules/mysql/lib/protocol/constants/client.js",
+            "node_modules/mysql/lib/protocol/constants/errors.js",
+            "node_modules/mysql/lib/protocol/constants/field_flags.js",
+            "node_modules/mysql/lib/protocol/constants/server_status.js",
+            "node_modules/mysql/lib/protocol/constants/ssl_profiles.js",
+            "node_modules/mysql/lib/protocol/constants/types.js",
+            "node_modules/mysql/lib/protocol/PacketHeader.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchResponsePacket.js",
+            "node_modules/mysql/lib/protocol/packets/ClientAuthenticationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComChangeUserPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComPingPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQueryPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQuitPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComStatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EmptyPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EofPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ErrorPacket.js",
+            "node_modules/mysql/lib/protocol/packets/Field.js",
+            "node_modules/mysql/lib/protocol/packets/FieldPacket.js",
+            "node_modules/mysql/lib/protocol/packets/HandshakeInitializationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/index.js",
+            "node_modules/mysql/lib/protocol/packets/LocalDataFilePacket.js",
+            "node_modules/mysql/lib/protocol/packets/LocalInfileRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OkPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ResultSetHeaderPacket.js",
+            "node_modules/mysql/lib/protocol/packets/RowDataPacket.js",
+            "node_modules/mysql/lib/protocol/packets/SSLRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/StatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/UseOldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/PacketWriter.js",
+            "node_modules/mysql/lib/protocol/Parser.js",
+            "node_modules/mysql/lib/protocol/Protocol.js",
+            "node_modules/mysql/lib/protocol/ResultSet.js",
+            "node_modules/mysql/lib/protocol/sequences/ChangeUser.js",
+            "node_modules/mysql/lib/protocol/sequences/Handshake.js",
+            "node_modules/mysql/lib/protocol/sequences/index.js",
+            "node_modules/mysql/lib/protocol/sequences/Ping.js",
+            "node_modules/mysql/lib/protocol/sequences/Query.js",
+            "node_modules/mysql/lib/protocol/sequences/Quit.js",
+            "node_modules/mysql/lib/protocol/sequences/Sequence.js",
+            "node_modules/mysql/lib/protocol/sequences/Statistics.js",
+            "node_modules/mysql/lib/protocol/SqlString.js",
+            "node_modules/mysql/lib/protocol/Timer.js",
+            "node_modules/mysql/License",
+            "node_modules/mysql/package.json",
+            "node_modules/mysql/Readme.md",
+            "node_modules/sqlstring/HISTORY.md",
+            "node_modules/sqlstring/index.js",
+            "node_modules/sqlstring/lib/SqlString.js",
+            "node_modules/sqlstring/LICENSE",
+            "node_modules/sqlstring/package.json",
+            "node_modules/sqlstring/README.md",
+            "node_modules/mysql/node_modules/safe-buffer/index.d.ts",
+            "node_modules/mysql/node_modules/safe-buffer/index.js",
+            "node_modules/mysql/node_modules/safe-buffer/LICENSE",
+            "node_modules/mysql/node_modules/safe-buffer/package.json",
+            "node_modules/mysql/node_modules/safe-buffer/README.md",
+            "node_modules/mysql/node_modules/readable-stream/CONTRIBUTING.md",
+            "node_modules/mysql/node_modules/readable-stream/doc/wg-meetings/2015-01-30.md",
+            "node_modules/mysql/node_modules/readable-stream/duplex-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/GOVERNANCE.md",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_readable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_transform.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_writable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/BufferList.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/destroy.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream.js",
+            "node_modules/mysql/node_modules/readable-stream/LICENSE",
+            "node_modules/mysql/node_modules/readable-stream/package.json",
+            "node_modules/mysql/node_modules/readable-stream/passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/readable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/readable.js",
+            "node_modules/mysql/node_modules/readable-stream/README.md",
+            "node_modules/mysql/node_modules/readable-stream/transform.js",
+            "node_modules/mysql/node_modules/readable-stream/writable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/writable.js",
+            "node_modules/util-deprecate/browser.js",
+            "node_modules/util-deprecate/History.md",
+            "node_modules/util-deprecate/LICENSE",
+            "node_modules/util-deprecate/node.js",
+            "node_modules/util-deprecate/package.json",
+            "node_modules/util-deprecate/README.md",
+            "node_modules/mysql/node_modules/string_decoder/lib/string_decoder.js",
+            "node_modules/mysql/node_modules/string_decoder/LICENSE",
+            "node_modules/mysql/node_modules/string_decoder/package.json",
+            "node_modules/mysql/node_modules/string_decoder/README.md",
+            "node_modules/process-nextick-args/index.js",
+            "node_modules/process-nextick-args/license.md",
+            "node_modules/process-nextick-args/package.json",
+            "node_modules/process-nextick-args/readme.md",
+            "node_modules/isarray/component.json",
+            "node_modules/isarray/index.js",
+            "node_modules/isarray/Makefile",
+            "node_modules/isarray/package.json",
+            "node_modules/isarray/README.md",
+            "node_modules/isarray/test.js",
+            "node_modules/inherits/inherits_browser.js",
+            "node_modules/inherits/inherits.js",
+            "node_modules/inherits/LICENSE",
+            "node_modules/inherits/package.json",
+            "node_modules/inherits/README.md",
+            "node_modules/core-util-is/float.patch",
+            "node_modules/core-util-is/lib/util.js",
+            "node_modules/core-util-is/LICENSE",
+            "node_modules/core-util-is/package.json",
+            "node_modules/core-util-is/README.md",
+            "node_modules/core-util-is/test.js",
+            "node_modules/bignumber.js/bignumber.d.ts",
+            "node_modules/bignumber.js/bignumber.js",
+            "node_modules/bignumber.js/bignumber.min.js",
+            "node_modules/bignumber.js/bignumber.min.js.map",
+            "node_modules/bignumber.js/bignumber.mjs",
+            "node_modules/bignumber.js/CHANGELOG.md",
+            "node_modules/bignumber.js/doc/API.html",
+            "node_modules/bignumber.js/LICENCE",
+            "node_modules/bignumber.js/package.json",
+            "node_modules/bignumber.js/README.md",
+            "node_modules/axios/CHANGELOG.md",
+            "node_modules/axios/dist/axios.js",
+            "node_modules/axios/dist/axios.map",
+            "node_modules/axios/dist/axios.min.js",
+            "node_modules/axios/dist/axios.min.map",
+            "node_modules/axios/index.d.ts",
+            "node_modules/axios/index.js",
+            "node_modules/axios/lib/adapters/http.js",
+            "node_modules/axios/lib/adapters/README.md",
+            "node_modules/axios/lib/adapters/xhr.js",
+            "node_modules/axios/lib/axios.js",
+            "node_modules/axios/lib/cancel/Cancel.js",
+            "node_modules/axios/lib/cancel/CancelToken.js",
+            "node_modules/axios/lib/cancel/isCancel.js",
+            "node_modules/axios/lib/core/Axios.js",
+            "node_modules/axios/lib/core/buildFullPath.js",
+            "node_modules/axios/lib/core/createError.js",
+            "node_modules/axios/lib/core/dispatchRequest.js",
+            "node_modules/axios/lib/core/enhanceError.js",
+            "node_modules/axios/lib/core/InterceptorManager.js",
+            "node_modules/axios/lib/core/mergeConfig.js",
+            "node_modules/axios/lib/core/README.md",
+            "node_modules/axios/lib/core/settle.js",
+            "node_modules/axios/lib/core/transformData.js",
+            "node_modules/axios/lib/defaults.js",
+            "node_modules/axios/lib/helpers/bind.js",
+            "node_modules/axios/lib/helpers/buildURL.js",
+            "node_modules/axios/lib/helpers/combineURLs.js",
+            "node_modules/axios/lib/helpers/cookies.js",
+            "node_modules/axios/lib/helpers/deprecatedMethod.js",
+            "node_modules/axios/lib/helpers/isAbsoluteURL.js",
+            "node_modules/axios/lib/helpers/isURLSameOrigin.js",
+            "node_modules/axios/lib/helpers/normalizeHeaderName.js",
+            "node_modules/axios/lib/helpers/parseHeaders.js",
+            "node_modules/axios/lib/helpers/README.md",
+            "node_modules/axios/lib/helpers/spread.js",
+            "node_modules/axios/lib/utils.js",
+            "node_modules/axios/LICENSE",
+            "node_modules/axios/package.json",
+            "node_modules/axios/README.md",
+            "node_modules/axios/UPGRADE_GUIDE.md",
+            "node_modules/axios/node_modules/follow-redirects/debug.js",
+            "node_modules/axios/node_modules/follow-redirects/http.js",
+            "node_modules/axios/node_modules/follow-redirects/https.js",
+            "node_modules/axios/node_modules/follow-redirects/index.js",
+            "node_modules/axios/node_modules/follow-redirects/LICENSE",
+            "node_modules/axios/node_modules/follow-redirects/package.json",
+            "node_modules/axios/node_modules/follow-redirects/README.md"
+          ],
+          "artifact": "/Users/msolimano/Documents/Rimac/prueba-domain/.serverless/postPruebaRimac.zip"
+        },
+        "environment": {
+          "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+          "PC_CLOUD_DATABASE": "reto_rimac",
+          "PC_CLOUD_USER": "admin",
+          "PC_CLOUD_PASSWORD": "N771610j.++",
+          "PC_CLOUD_PORT": 3306,
+          "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "reto/api",
+              "method": "post",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "200 response",
+                  "schema": {
+                    "$ref": "#/definitions/Empty"
+                  },
+                  "headers": {
+                    "Access-Control-Allow-Origin": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "cors": {
+                "origin": "*",
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "Access-Control-Allow-Origin",
+                  "Access-Control-Allow-Credentials",
+                  "User"
+                ],
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "memory": 512,
+        "timeout": 60,
+        "runtime": "nodejs10.x",
+        "vpc": {}
+      },
+      "getListadoPersona": {
+        "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.listarpersonaapicontroller",
+        "name": "LMBPRUEBARIMACPERSONAS",
+        "description": "Retorna un listado de las personas registradas enlasadas a SWAPI",
+        "package": {
+          "include": [
+            "LMBPRUEBARIMAC/src/**",
+            "LMBPRUEBARIMAC/src/controllers/PruebaController.js",
+            "LMBPRUEBARIMAC/src/util/AwsUtils.js",
+            "LMBPRUEBARIMAC/src/services/PruebaRimacService.js",
+            "LMBPRUEBARIMAC/src/models/response/PersonaRes.js",
+            "LMBPRUEBARIMAC/src/db/PersonaDB.js",
+            "LMBPRUEBARIMAC/src/models/response/DetalleRes.js",
+            "LMBPRUEBARIMAC/src/db/PCCloudConnection.js",
+            "LMBPRUEBARIMAC/src/db/config.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlConnection.js",
+            "LMBPRUEBARIMAC/src/db/util/MySqlDatabase.js",
+            "LMBPRUEBARIMAC/src/db/util/ObjectMapper.js",
+            "LMBPRUEBARIMAC/src/constants/Query_rds.js",
+            "LMBPRUEBARIMAC/src/models/response/ResponseUserCreado.js",
+            "LMBPRUEBARIMAC/src/models/request/PersonaReq.js",
+            "LMBPRUEBARIMAC/src/validators/RequestValidador.js",
+            "node_modules/joi/CHANGELOG.md",
+            "node_modules/joi/lib/cast.js",
+            "node_modules/joi/lib/errors.js",
+            "node_modules/joi/lib/index.js",
+            "node_modules/joi/lib/language.js",
+            "node_modules/joi/lib/ref.js",
+            "node_modules/joi/lib/schemas.js",
+            "node_modules/joi/lib/set.js",
+            "node_modules/joi/lib/types/alternatives/index.js",
+            "node_modules/joi/lib/types/any/index.js",
+            "node_modules/joi/lib/types/any/settings.js",
+            "node_modules/joi/lib/types/array/index.js",
+            "node_modules/joi/lib/types/binary/index.js",
+            "node_modules/joi/lib/types/boolean/index.js",
+            "node_modules/joi/lib/types/date/index.js",
+            "node_modules/joi/lib/types/func/index.js",
+            "node_modules/joi/lib/types/lazy/index.js",
+            "node_modules/joi/lib/types/number/index.js",
+            "node_modules/joi/lib/types/object/index.js",
+            "node_modules/joi/lib/types/state.js",
+            "node_modules/joi/lib/types/string/index.js",
+            "node_modules/joi/lib/types/string/ip.js",
+            "node_modules/joi/lib/types/string/rfc3986.js",
+            "node_modules/joi/lib/types/string/uri.js",
+            "node_modules/joi/lib/types/symbol/index.js",
+            "node_modules/joi/lib/types/symbols.js",
+            "node_modules/joi/LICENSE",
+            "node_modules/joi/package.json",
+            "node_modules/joi/README.md",
+            "node_modules/topo/lib/index.js",
+            "node_modules/topo/LICENSE",
+            "node_modules/topo/package.json",
+            "node_modules/topo/README.md",
+            "node_modules/hoek/CHANGELOG.md",
+            "node_modules/hoek/lib/deep-equal.js",
+            "node_modules/hoek/lib/escape.js",
+            "node_modules/hoek/lib/index.js",
+            "node_modules/hoek/LICENSE",
+            "node_modules/hoek/package.json",
+            "node_modules/hoek/README.md",
+            "node_modules/isemail/lib/index.d.ts",
+            "node_modules/isemail/lib/index.js",
+            "node_modules/isemail/LICENSE",
+            "node_modules/isemail/package.json",
+            "node_modules/isemail/README.md",
+            "node_modules/isemail/node_modules/punycode/LICENSE-MIT.txt",
+            "node_modules/isemail/node_modules/punycode/package.json",
+            "node_modules/isemail/node_modules/punycode/punycode.es6.js",
+            "node_modules/isemail/node_modules/punycode/punycode.js",
+            "node_modules/isemail/node_modules/punycode/README.md",
+            "node_modules/mysql/Changes.md",
+            "node_modules/mysql/index.js",
+            "node_modules/mysql/lib/Connection.js",
+            "node_modules/mysql/lib/ConnectionConfig.js",
+            "node_modules/mysql/lib/Pool.js",
+            "node_modules/mysql/lib/PoolCluster.js",
+            "node_modules/mysql/lib/PoolConfig.js",
+            "node_modules/mysql/lib/PoolConnection.js",
+            "node_modules/mysql/lib/PoolNamespace.js",
+            "node_modules/mysql/lib/PoolSelector.js",
+            "node_modules/mysql/lib/protocol/Auth.js",
+            "node_modules/mysql/lib/protocol/BufferList.js",
+            "node_modules/mysql/lib/protocol/constants/charsets.js",
+            "node_modules/mysql/lib/protocol/constants/client.js",
+            "node_modules/mysql/lib/protocol/constants/errors.js",
+            "node_modules/mysql/lib/protocol/constants/field_flags.js",
+            "node_modules/mysql/lib/protocol/constants/server_status.js",
+            "node_modules/mysql/lib/protocol/constants/ssl_profiles.js",
+            "node_modules/mysql/lib/protocol/constants/types.js",
+            "node_modules/mysql/lib/protocol/PacketHeader.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/AuthSwitchResponsePacket.js",
+            "node_modules/mysql/lib/protocol/packets/ClientAuthenticationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComChangeUserPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComPingPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQueryPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComQuitPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ComStatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EmptyPacket.js",
+            "node_modules/mysql/lib/protocol/packets/EofPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ErrorPacket.js",
+            "node_modules/mysql/lib/protocol/packets/Field.js",
+            "node_modules/mysql/lib/protocol/packets/FieldPacket.js",
+            "node_modules/mysql/lib/protocol/packets/HandshakeInitializationPacket.js",
+            "node_modules/mysql/lib/protocol/packets/index.js",
+            "node_modules/mysql/lib/protocol/packets/LocalDataFilePacket.js",
+            "node_modules/mysql/lib/protocol/packets/LocalInfileRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OkPacket.js",
+            "node_modules/mysql/lib/protocol/packets/OldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/packets/ResultSetHeaderPacket.js",
+            "node_modules/mysql/lib/protocol/packets/RowDataPacket.js",
+            "node_modules/mysql/lib/protocol/packets/SSLRequestPacket.js",
+            "node_modules/mysql/lib/protocol/packets/StatisticsPacket.js",
+            "node_modules/mysql/lib/protocol/packets/UseOldPasswordPacket.js",
+            "node_modules/mysql/lib/protocol/PacketWriter.js",
+            "node_modules/mysql/lib/protocol/Parser.js",
+            "node_modules/mysql/lib/protocol/Protocol.js",
+            "node_modules/mysql/lib/protocol/ResultSet.js",
+            "node_modules/mysql/lib/protocol/sequences/ChangeUser.js",
+            "node_modules/mysql/lib/protocol/sequences/Handshake.js",
+            "node_modules/mysql/lib/protocol/sequences/index.js",
+            "node_modules/mysql/lib/protocol/sequences/Ping.js",
+            "node_modules/mysql/lib/protocol/sequences/Query.js",
+            "node_modules/mysql/lib/protocol/sequences/Quit.js",
+            "node_modules/mysql/lib/protocol/sequences/Sequence.js",
+            "node_modules/mysql/lib/protocol/sequences/Statistics.js",
+            "node_modules/mysql/lib/protocol/SqlString.js",
+            "node_modules/mysql/lib/protocol/Timer.js",
+            "node_modules/mysql/License",
+            "node_modules/mysql/package.json",
+            "node_modules/mysql/Readme.md",
+            "node_modules/sqlstring/HISTORY.md",
+            "node_modules/sqlstring/index.js",
+            "node_modules/sqlstring/lib/SqlString.js",
+            "node_modules/sqlstring/LICENSE",
+            "node_modules/sqlstring/package.json",
+            "node_modules/sqlstring/README.md",
+            "node_modules/mysql/node_modules/safe-buffer/index.d.ts",
+            "node_modules/mysql/node_modules/safe-buffer/index.js",
+            "node_modules/mysql/node_modules/safe-buffer/LICENSE",
+            "node_modules/mysql/node_modules/safe-buffer/package.json",
+            "node_modules/mysql/node_modules/safe-buffer/README.md",
+            "node_modules/mysql/node_modules/readable-stream/CONTRIBUTING.md",
+            "node_modules/mysql/node_modules/readable-stream/doc/wg-meetings/2015-01-30.md",
+            "node_modules/mysql/node_modules/readable-stream/duplex-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/GOVERNANCE.md",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_duplex.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_readable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_transform.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/_stream_writable.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/BufferList.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/destroy.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/lib/internal/streams/stream.js",
+            "node_modules/mysql/node_modules/readable-stream/LICENSE",
+            "node_modules/mysql/node_modules/readable-stream/package.json",
+            "node_modules/mysql/node_modules/readable-stream/passthrough.js",
+            "node_modules/mysql/node_modules/readable-stream/readable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/readable.js",
+            "node_modules/mysql/node_modules/readable-stream/README.md",
+            "node_modules/mysql/node_modules/readable-stream/transform.js",
+            "node_modules/mysql/node_modules/readable-stream/writable-browser.js",
+            "node_modules/mysql/node_modules/readable-stream/writable.js",
+            "node_modules/util-deprecate/browser.js",
+            "node_modules/util-deprecate/History.md",
+            "node_modules/util-deprecate/LICENSE",
+            "node_modules/util-deprecate/node.js",
+            "node_modules/util-deprecate/package.json",
+            "node_modules/util-deprecate/README.md",
+            "node_modules/mysql/node_modules/string_decoder/lib/string_decoder.js",
+            "node_modules/mysql/node_modules/string_decoder/LICENSE",
+            "node_modules/mysql/node_modules/string_decoder/package.json",
+            "node_modules/mysql/node_modules/string_decoder/README.md",
+            "node_modules/process-nextick-args/index.js",
+            "node_modules/process-nextick-args/license.md",
+            "node_modules/process-nextick-args/package.json",
+            "node_modules/process-nextick-args/readme.md",
+            "node_modules/isarray/component.json",
+            "node_modules/isarray/index.js",
+            "node_modules/isarray/Makefile",
+            "node_modules/isarray/package.json",
+            "node_modules/isarray/README.md",
+            "node_modules/isarray/test.js",
+            "node_modules/inherits/inherits_browser.js",
+            "node_modules/inherits/inherits.js",
+            "node_modules/inherits/LICENSE",
+            "node_modules/inherits/package.json",
+            "node_modules/inherits/README.md",
+            "node_modules/core-util-is/float.patch",
+            "node_modules/core-util-is/lib/util.js",
+            "node_modules/core-util-is/LICENSE",
+            "node_modules/core-util-is/package.json",
+            "node_modules/core-util-is/README.md",
+            "node_modules/core-util-is/test.js",
+            "node_modules/bignumber.js/bignumber.d.ts",
+            "node_modules/bignumber.js/bignumber.js",
+            "node_modules/bignumber.js/bignumber.min.js",
+            "node_modules/bignumber.js/bignumber.min.js.map",
+            "node_modules/bignumber.js/bignumber.mjs",
+            "node_modules/bignumber.js/CHANGELOG.md",
+            "node_modules/bignumber.js/doc/API.html",
+            "node_modules/bignumber.js/LICENCE",
+            "node_modules/bignumber.js/package.json",
+            "node_modules/bignumber.js/README.md",
+            "node_modules/axios/CHANGELOG.md",
+            "node_modules/axios/dist/axios.js",
+            "node_modules/axios/dist/axios.map",
+            "node_modules/axios/dist/axios.min.js",
+            "node_modules/axios/dist/axios.min.map",
+            "node_modules/axios/index.d.ts",
+            "node_modules/axios/index.js",
+            "node_modules/axios/lib/adapters/http.js",
+            "node_modules/axios/lib/adapters/README.md",
+            "node_modules/axios/lib/adapters/xhr.js",
+            "node_modules/axios/lib/axios.js",
+            "node_modules/axios/lib/cancel/Cancel.js",
+            "node_modules/axios/lib/cancel/CancelToken.js",
+            "node_modules/axios/lib/cancel/isCancel.js",
+            "node_modules/axios/lib/core/Axios.js",
+            "node_modules/axios/lib/core/buildFullPath.js",
+            "node_modules/axios/lib/core/createError.js",
+            "node_modules/axios/lib/core/dispatchRequest.js",
+            "node_modules/axios/lib/core/enhanceError.js",
+            "node_modules/axios/lib/core/InterceptorManager.js",
+            "node_modules/axios/lib/core/mergeConfig.js",
+            "node_modules/axios/lib/core/README.md",
+            "node_modules/axios/lib/core/settle.js",
+            "node_modules/axios/lib/core/transformData.js",
+            "node_modules/axios/lib/defaults.js",
+            "node_modules/axios/lib/helpers/bind.js",
+            "node_modules/axios/lib/helpers/buildURL.js",
+            "node_modules/axios/lib/helpers/combineURLs.js",
+            "node_modules/axios/lib/helpers/cookies.js",
+            "node_modules/axios/lib/helpers/deprecatedMethod.js",
+            "node_modules/axios/lib/helpers/isAbsoluteURL.js",
+            "node_modules/axios/lib/helpers/isURLSameOrigin.js",
+            "node_modules/axios/lib/helpers/normalizeHeaderName.js",
+            "node_modules/axios/lib/helpers/parseHeaders.js",
+            "node_modules/axios/lib/helpers/README.md",
+            "node_modules/axios/lib/helpers/spread.js",
+            "node_modules/axios/lib/utils.js",
+            "node_modules/axios/LICENSE",
+            "node_modules/axios/package.json",
+            "node_modules/axios/README.md",
+            "node_modules/axios/UPGRADE_GUIDE.md",
+            "node_modules/axios/node_modules/follow-redirects/debug.js",
+            "node_modules/axios/node_modules/follow-redirects/http.js",
+            "node_modules/axios/node_modules/follow-redirects/https.js",
+            "node_modules/axios/node_modules/follow-redirects/index.js",
+            "node_modules/axios/node_modules/follow-redirects/LICENSE",
+            "node_modules/axios/node_modules/follow-redirects/package.json",
+            "node_modules/axios/node_modules/follow-redirects/README.md"
+          ],
+          "artifact": "/Users/msolimano/Documents/Rimac/prueba-domain/.serverless/getListadoPersona.zip"
+        },
+        "environment": {
+          "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+          "PC_CLOUD_DATABASE": "reto_rimac",
+          "PC_CLOUD_USER": "admin",
+          "PC_CLOUD_PASSWORD": "N771610j.++",
+          "PC_CLOUD_PORT": 3306
+        },
+        "events": [
+          {
+            "http": {
+              "path": "reto/listPersonas",
+              "method": "get",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "200 response",
+                  "schema": {
+                    "$ref": "#/definitions/Empty"
+                  },
+                  "headers": {
+                    "Access-Control-Allow-Origin": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "cors": {
+                "origin": "*",
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "Access-Control-Allow-Origin",
+                  "Access-Control-Allow-Credentials",
+                  "User"
+                ],
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "memory": 512,
+        "timeout": 60,
+        "runtime": "nodejs10.x",
+        "vpc": {}
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yaml",
+    "layers": {},
+    "initialServerlessConfig": {
+      "service": "UE2PRUEBARIMAC",
+      "custom": {
+        "serverless-offline": {
+          "port": 4000
+        },
+        "stage": "desa",
+        "env": {
+          "desa": "DESA",
+          "test": "TEST",
+          "prod": "PROD"
+        },
+        "environments": {
+          "desa": "DESARROLLO",
+          "test": "TEST",
+          "prod": "PRODUCCION"
+        },
+        "region": {
+          "desa": "us-east-2",
+          "test": "us-east-2",
+          "prod": "us-east-1"
+        },
+        "region-name": {
+          "desa": "UE2",
+          "test": "UE2",
+          "prod": "UE1"
+        },
+        "auth": {
+          "desa": "rm0dyu",
+          "test": "l9g1gd",
+          "prod": "yk1mpo"
+        },
+        "type_auth": {
+          "desa": "aws_iam",
+          "test": "aws_iam",
+          "prod": "aws_iam"
+        },
+        "db_name": {
+          "desa": "reto_rimac",
+          "test": "reto_rimac",
+          "prod": "reto_rimac"
+        },
+        "db_host": {
+          "desa": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+          "test": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+          "prod": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com"
+        },
+        "db_password": {
+          "desa": "N771610j.++",
+          "test": "N771610j.++",
+          "prod": "N771610j.++"
+        },
+        "db_username": {
+          "desa": "admin",
+          "test": "admin",
+          "prod": "admin"
+        },
+        "db_port": 3306,
+        "role": {
+          "desa": "arn:aws:iam::477542548955:role/UE1SEGDESAIAMROLPRUEBAMB001",
+          "test": "arn:aws:iam::477542548955:role/UE1SEGTESTIAMROLPRUEBAMB001",
+          "prod": "arn:aws:iam::477542548955:role/UE1SEGPRODIAMROLPRUEBAMB001"
+        },
+        "serviceName": "${self:}",
+        "api": {
+          "desa": "1ga4rgw9u1",
+          "test": "1ga4rgw9u1",
+          "prod": ""
+        },
+        "project": "PRUEBA RIMAC",
+        "domain": "RIMAC",
+        "responsable": "MARCO SOLIMANO",
+        "status": "PROYECTO",
+        "module": "PRUEBA"
+      },
+      "plugins": {
+        "$ref": "$[\"service\"][\"plugins\"]"
+      },
+      "provider": {
+        "name": "aws",
+        "apiGateway": {
+          "restApiId": "i95m2k8tma",
+          "restApiRootResourceId": "muooor"
+        },
+        "runtime": "nodejs10.x",
+        "region": "us-east-2",
+        "stage": "desa",
+        "tracing": true,
+        "timeout": 60,
+        "memorySize": 512,
+        "versionFunctions": false,
+        "stackTags": {
+          "NAME": "Proyecto Prueba",
+          "ENTORNO": "DESARROLLO",
+          "PROYECTO": "PRUEBA RIMAC",
+          "DOMINIO": "RIMAC",
+          "RESPONSABLE": "MARCO SOLIMANO",
+          "ESTADO_OPERACION": "PROYECTO",
+          "MODULO": "PRUEBA"
+        }
+      },
+      "package": {
+        "individually": true,
+        "exclude": [
+          "node_modules/**",
+          "LMBPRUEBARIMAC/**",
+          "./**.json",
+          "./**.yml",
+          "npm-cache/**",
+          "./**.sh"
+        ],
+        "artifactDirectoryName": "serverless/UE2PRUEBARIMAC/desa/1604679298566-2020-11-06T16:14:58.566Z"
+      },
+      "functions": [
+        {
+          "getPruebaRimac": {
+            "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.Consultarstarwarsapicontroller",
+            "name": "LMBPRUEBARIMACGET",
+            "description": "Retorna un listado de las api SWAPI",
+            "package": {
+              "include": [
+                "LMBPRUEBARIMAC/src/**"
+              ]
+            },
+            "environment": {
+              "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+              "PC_CLOUD_DATABASE": "reto_rimac",
+              "PC_CLOUD_USER": "admin",
+              "PC_CLOUD_PASSWORD": "N771610j.++",
+              "PC_CLOUD_PORT": 3306,
+              "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+            },
+            "events": [
+              {
+                "http": {
+                  "path": "reto/api",
+                  "method": "get",
+                  "produces": [
+                    "application/json"
+                  ],
+                  "responses": {
+                    "200": {
+                      "description": "200 response",
+                      "schema": {
+                        "$ref": "#/definitions/Empty"
+                      },
+                      "headers": {
+                        "Access-Control-Allow-Origin": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "cors": {
+                    "origin": "*",
+                    "headers": [
+                      "Content-Type",
+                      "X-Amz-Date",
+                      "Authorization",
+                      "X-Api-Key",
+                      "X-Amz-Security-Token",
+                      "X-Amz-User-Agent",
+                      "Access-Control-Allow-Origin",
+                      "Access-Control-Allow-Credentials",
+                      "User"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "postPruebaRimac": {
+            "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.regitrarstarwarsapicontroller",
+            "name": "LMBPRUEBARIMACPOST",
+            "description": "Registra a una persona con modelo de SWAPI",
+            "package": {
+              "include": [
+                "LMBPRUEBARIMAC/src/**"
+              ]
+            },
+            "environment": {
+              "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+              "PC_CLOUD_DATABASE": "reto_rimac",
+              "PC_CLOUD_USER": "admin",
+              "PC_CLOUD_PASSWORD": "N771610j.++",
+              "PC_CLOUD_PORT": 3306,
+              "API_SERVICE_STARS_WARS": "https://swapi.py4e.com/api/people/"
+            },
+            "events": [
+              {
+                "http": {
+                  "path": "reto/api",
+                  "method": "post",
+                  "produces": [
+                    "application/json"
+                  ],
+                  "responses": {
+                    "200": {
+                      "description": "200 response",
+                      "schema": {
+                        "$ref": "#/definitions/Empty"
+                      },
+                      "headers": {
+                        "Access-Control-Allow-Origin": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "cors": {
+                    "origin": "*",
+                    "headers": [
+                      "Content-Type",
+                      "X-Amz-Date",
+                      "Authorization",
+                      "X-Api-Key",
+                      "X-Amz-Security-Token",
+                      "X-Amz-User-Agent",
+                      "Access-Control-Allow-Origin",
+                      "Access-Control-Allow-Credentials",
+                      "User"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "getListadoPersona": {
+            "handler": "LMBPRUEBARIMAC/src/controllers/PruebaController.listarpersonaapicontroller",
+            "name": "LMBPRUEBARIMACPERSONAS",
+            "description": "Retorna un listado de las personas registradas enlasadas a SWAPI",
+            "package": {
+              "include": [
+                "LMBPRUEBARIMAC/src/**"
+              ]
+            },
+            "environment": {
+              "PC_CLOUD_HOST": "comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com",
+              "PC_CLOUD_DATABASE": "reto_rimac",
+              "PC_CLOUD_USER": "admin",
+              "PC_CLOUD_PASSWORD": "N771610j.++",
+              "PC_CLOUD_PORT": 3306
+            },
+            "events": [
+              {
+                "http": {
+                  "path": "reto/listPersonas",
+                  "method": "get",
+                  "produces": [
+                    "application/json"
+                  ],
+                  "responses": {
+                    "200": {
+                      "description": "200 response",
+                      "schema": {
+                        "$ref": "#/definitions/Empty"
+                      },
+                      "headers": {
+                        "Access-Control-Allow-Origin": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "cors": {
+                    "origin": "*",
+                    "headers": [
+                      "Content-Type",
+                      "X-Amz-Date",
+                      "Authorization",
+                      "X-Api-Key",
+                      "X-Amz-Security-Token",
+                      "X-Amz-User-Agent",
+                      "Access-Control-Allow-Origin",
+                      "Access-Control-Allow-Credentials",
+                      "User"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/UE2PRUEBARIMAC/desa/1604679298566-2020-11-06T16:14:58.566Z",
+    "artifact": ""
+  }
+}

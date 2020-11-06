@@ -1,0 +1,23 @@
+{
+  "name": "PruebaRimac",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline start --stage desa",
+    "deploy": "sls deploy --stage desa"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pruebarimac/pruebaRimac": "file:LMBPRUEBARIMAC",
+    "axios": "^0.21.0",
+    "joi": "^14.3.1",
+    "mysql": "^2.18.1",
+    "util": "^0.12.3",
+    "serverless": "^1.65.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-include-dependencies": "^4.1.0"
+  }
+}

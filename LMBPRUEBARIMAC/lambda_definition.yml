@@ -1,0 +1,128 @@
+getPruebaRimac:
+  handler: "LMBPRUEBARIMAC/src/controllers/PruebaController.Consultarstarwarsapicontroller"
+  name: "LMBPRUEBARIMACGET"
+  description: Retorna un listado de las api SWAPI
+  package:
+    include:
+    - LMBPRUEBARIMAC/src/**
+  environment:       
+    PC_CLOUD_HOST: "${self:custom.db_host.${self:custom.stage}}"
+    PC_CLOUD_DATABASE: "${self:custom.db_name.${self:custom.stage}}"
+    PC_CLOUD_USER: "${self:custom.db_username.${self:custom.stage}}"
+    PC_CLOUD_PASSWORD: "${self:custom.db_password.${self:custom.stage}}"
+    PC_CLOUD_PORT: "${self:custom.db_port}"
+    API_SERVICE_STARS_WARS: "https://swapi.py4e.com/api/people/"
+  events:
+    - http:
+        path: reto/api
+        method: get
+        produces:
+           - "application/json"
+        # authorizer:
+        #  type: "${self:custom.type_auth.${self:custom.stage}}"
+        responses:
+           200:
+             description: "200 response"
+             schema:
+               $ref: "#/definitions/Empty"
+             headers:
+               Access-Control-Allow-Origin:
+                type: "string"
+        cors:
+           origin: '*'
+           headers:
+               - Content-Type
+               - X-Amz-Date
+               - Authorization
+               - X-Api-Key
+               - X-Amz-Security-Token
+               - X-Amz-User-Agent
+               - Access-Control-Allow-Origin
+               - Access-Control-Allow-Credentials
+               - User
+
+postPruebaRimac:
+  handler: LMBPRUEBARIMAC/src/controllers/PruebaController.regitrarstarwarsapicontroller
+  name: "LMBPRUEBARIMACPOST"
+  description: Registra a una persona con modelo de SWAPI
+  package:
+    include:
+    - LMBPRUEBARIMAC/src/**
+  environment:       
+    PC_CLOUD_HOST: "${self:custom.db_host.${self:custom.stage}}"
+    PC_CLOUD_DATABASE: "${self:custom.db_name.${self:custom.stage}}"
+    PC_CLOUD_USER: "${self:custom.db_username.${self:custom.stage}}"
+    PC_CLOUD_PASSWORD: "${self:custom.db_password.${self:custom.stage}}"
+    PC_CLOUD_PORT: "${self:custom.db_port}"
+    API_SERVICE_STARS_WARS: "https://swapi.py4e.com/api/people/"
+  events:
+    - http:
+        path: reto/api
+        method: post
+        produces:
+           - "application/json"
+        # authorizer:
+        #  type: "${self:custom.type_auth.${self:custom.stage}}"
+        responses:
+           200:
+             description: "200 response"
+             schema:
+               $ref: "#/definitions/Empty"
+             headers:
+               Access-Control-Allow-Origin:
+                type: "string"
+        cors:
+           origin: '*'
+           headers:
+               - Content-Type
+               - X-Amz-Date
+               - Authorization
+               - X-Api-Key
+               - X-Amz-Security-Token
+               - X-Amz-User-Agent
+               - Access-Control-Allow-Origin
+               - Access-Control-Allow-Credentials
+               - User
+
+
+getListadoPersona:
+  handler: LMBPRUEBARIMAC/src/controllers/PruebaController.listarpersonaapicontroller
+  name: "LMBPRUEBARIMACPERSONAS"
+  description: Retorna un listado de las personas registradas enlasadas a SWAPI
+  package:
+    include:
+    - LMBPRUEBARIMAC/src/**
+  environment:       
+    PC_CLOUD_HOST: "${self:custom.db_host.${self:custom.stage}}"
+    PC_CLOUD_DATABASE: "${self:custom.db_name.${self:custom.stage}}"
+    PC_CLOUD_USER: "${self:custom.db_username.${self:custom.stage}}"
+    PC_CLOUD_PASSWORD: "${self:custom.db_password.${self:custom.stage}}"
+    PC_CLOUD_PORT: "${self:custom.db_port}"
+  events:
+    - http:
+        path: reto/listPersonas
+        method: get
+        produces:
+           - "application/json"
+        # authorizer:
+        #  type: "${self:custom.type_auth.${self:custom.stage}}"
+        responses:
+           200:
+             description: "200 response"
+             schema:
+               $ref: "#/definitions/Empty"
+             headers:
+               Access-Control-Allow-Origin:
+                type: "string"
+        cors:
+           origin: '*'
+           headers:
+               - Content-Type
+               - X-Amz-Date
+               - Authorization
+               - X-Api-Key
+               - X-Amz-Security-Token
+               - X-Amz-User-Agent
+               - Access-Control-Allow-Origin
+               - Access-Control-Allow-Credentials
+               - User

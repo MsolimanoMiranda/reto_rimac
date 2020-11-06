@@ -1,0 +1,118 @@
+serverless-offline:
+    port: 4000
+stage: ${opt:stage, self:provider.stage}
+
+
+env:
+    desa: DESA
+    test: TEST
+    prod: PROD
+
+environments:
+    desa: DESARROLLO
+    test: TEST
+    prod: PRODUCCION
+
+region: 
+    desa: us-east-2 
+    test: us-east-2
+    prod: us-east-1
+
+region-name: 
+    desa: UE2
+    test: UE2
+    prod: UE1  
+
+auth:
+    desa: rm0dyu
+    test: l9g1gd
+    prod: yk1mpo
+
+type_auth:
+    desa: aws_iam
+    test: aws_iam
+    prod: aws_iam
+ 
+
+db_name: 
+    desa: reto_rimac
+    test: reto_rimac
+    prod: reto_rimac
+
+db_host: 
+    desa: comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com
+    test: comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com
+    prod: comandapp.ck9sukxigigi.sa-east-1.rds.amazonaws.com
+
+
+db_password: 
+    desa: N771610j.++
+    test: N771610j.++
+    prod: N771610j.++
+
+db_username: 
+    desa: admin
+    test: admin
+    prod: admin
+
+
+db_port: 3306
+
+
+role:
+    desa: "arn:aws:iam::477542548955:role/UE1SEGDESAIAMROLPRUEBAMB001"
+    test: "arn:aws:iam::477542548955:role/UE1SEGTESTIAMROLPRUEBAMB001"
+    prod: "arn:aws:iam::477542548955:role/UE1SEGPRODIAMROLPRUEBAMB001"
+
+serviceName: ${self:}
+
+api:
+    desa: "1ga4rgw9u1"
+    test: "1ga4rgw9u1"
+    prod: ""
+
+    
+project: PRUEBA RIMAC
+domain: RIMAC
+responsable: MARCO SOLIMANO
+status: PROYECTO
+module: PRUEBA
+
+
+
+# security-group-id:
+#     desa: sg-34283f5f
+#     test: sg-34283f5f
+#     prod: sg-0ea7fd23a9ff7758c
+
+# sub-net-id_a:
+#     desa: subnet-ea5a3a82
+#     test: subnet-ea5a3a82
+#     prod: subnet-0218d3847c8efbb21
+
+# sub-net-id_b:
+#     desa: subnet-712ef70b
+#     test: subnet-712ef70b
+#     prod: subnet-005ecb1c965b8f050  
+
+# sub-net-id_c:
+#     desa: subnet-6f5c3c07
+#     test: subnet-6f5c3c07
+#     prod: subnet-054e4c0ebfded8d4a  
+
+# sub-net-id_d:
+#     desa: subnet-1a2bf260
+#     test: subnet-1a2bf260
+#     prod: subnet-07de999eb84c820e9
+
+# sub-net-id_e:
+#     prod: subnet-092f4ced710a9c6a4 
+
+# sub-net-id_f:
+#     prod: subnet-0e62fbf1acf0991cb 
+
+# ssm_path_init:
+#     desa: /journey-venta-vida/desa/ 
+#     test: /journey-venta-vida/test/ 
+#     prod: /journey-venta-vida/prod/
+

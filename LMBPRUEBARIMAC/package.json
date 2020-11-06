@@ -1,0 +1,25 @@
+{
+  "name": "PruebaRimac",
+  "version": "0.0.1",
+  "description": "Lambda ",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline start --stage desa",
+    "start-qa": "sls offline start --stage test",
+    "test": "nyc --reporter=html --reporter=text mocha ./test/*.test.js",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "debug": "node --inspect .\\node_modules\\serverless\\bin\\serverless offline --stage TEST"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.524.0",
+    "axios": "^0.18.1",
+    "serverless": "^1.51.0",
+    "sls": "^0.1.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.10.1",
+    "serverless-plugin-include-dependencies": "^3.2.1"
+	
+  }
+}
